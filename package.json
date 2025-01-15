@@ -9,14 +9,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc -b",
-    "start": "node dist/app.js"
+    "build": "tsc -d && babel dist -d dist",
+    "start": "node dist/app.js",
+    "deploy": "fly deploy"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Kyungseok Oh<bestspx@gmail.com>",
+  "license": "MIT",
   "description": "",
   "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/core": "^7.26.0",
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@flydotio/dockerfile": "^0.7.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.6",

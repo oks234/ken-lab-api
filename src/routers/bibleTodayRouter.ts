@@ -3,14 +3,27 @@ import puppeteer from "puppeteer";
 
 const router = express.Router();
 
+const puppeteerLaunchOptions = {
+  executablePath: process.env.CHROME_BIN,
+  args: [
+    // Required for Docker version of Puppeteer
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    // This will write shared memory files into /tmp instead of /dev/shm,
+    // because Docker’s default for /dev/shm is 64MB
+    "--disable-dev-shm-usage",
+  ],
+};
+
 router.get("/cbs", async (req, res) => {
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(puppeteerLaunchOptions);
   const page = await browser.newPage();
 
   // Navigate the page to a URL.
   await page.goto(
-    "http://www.somyung.or.kr/modu/media_board/list.asp?board_idx=3&sub_idx=1&lef=02"
+    "http://www.somyung.or.kr/modu/media_board/list.asp?board_idx=3&sub_idx=1&lef=02",
+    { waitUntil: "networkidle0" }
   );
 
   // Set screen size.
@@ -26,7 +39,9 @@ router.get("/cbs", async (req, res) => {
   //   return res.sendStatus(404);
   // }
 
-  await page.goto("http://www.somyung.or.kr/modu/media_board/" + href);
+  await page.goto("http://www.somyung.or.kr/modu/media_board/" + href, {
+    waitUntil: "networkidle0",
+  });
 
   const audioBtnHandle = await page.$(".media_read_vod_btn_view");
   const onclickAttr = await audioBtnHandle?.evaluate((el) =>
@@ -50,14 +65,14 @@ router.get("/cbs", async (req, res) => {
 router.get("/", async (req, res) => {
   const translation = req.query["translation"] ?? "개역개정";
 
-  console.log({ translation });
-
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(puppeteerLaunchOptions);
   const page = await browser.newPage();
 
   // Navigate the page to a URL.
-  await page.goto("https://sum.su.or.kr:8888/bible/today");
+  await page.goto("https://sum.su.or.kr:8888/bible/today", {
+    waitUntil: "domcontentloaded",
+  });
 
   // Set screen size.
   await page.setViewport({ width: 1080, height: 1024 });
@@ -75,7 +90,10 @@ router.get("/", async (req, res) => {
     await page.waitForNetworkIdle();
   }
   const verseElHandles = await page.$$("#body_list > li");
-  const verses: { num: number; info: string }[] = [];
+  const verses: {
+    num: number;
+    info: string;
+  }[] = [];
   for (let i = 0; i < verseElHandles.length; i++) {
     const verseElHandle = verseElHandles[i];
     const verse = await verseElHandle.evaluate((el) => {
