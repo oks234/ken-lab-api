@@ -48,9 +48,9 @@ router.get("/cbs", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const 번역 = req.query["번역"] ?? "개역개정";
+  const translation = req.query["translation"] ?? "개역개정";
 
-  console.log({ 번역 });
+  console.log({ translation });
 
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch();
@@ -67,7 +67,7 @@ router.get("/", async (req, res) => {
   const rangeTxt = await rangeElHandle?.evaluate((el) => el.textContent);
   const execResult = /.+\:\s(.+)\((.+)\)(.+)\s찬.+/.exec(rangeTxt ?? "");
   const [_, koTitle, enTitle, range] = execResult ?? ["", "", "", ""];
-  if (번역 === "새번역") {
+  if (translation === "새번역") {
     const radioAreas = await page.$$(".raio_area");
     if (radioAreas) {
       await radioAreas[1]?.click();
