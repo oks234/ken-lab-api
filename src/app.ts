@@ -1,4 +1,6 @@
 import express from "express";
+import bibleTodayRouter from "./routers/bibleTodayRouter";
+
 const app = express();
 const port = 3000;
 
@@ -6,10 +8,8 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/bible-today", (req, res) => {
-  res.send("bible-today");
-});
+app.use("/bible-today", bibleTodayRouter);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listenisng on port ${port}`);
 });
