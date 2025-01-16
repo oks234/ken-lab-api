@@ -56,10 +56,9 @@ router.get("/cbs", async (req, res) => {
 
   await browser.close();
 
-  const isoDate = new Date(new Date().toLocaleDateString()).toISOString();
   const mp3 = "https://idcmedia.com/" + path;
 
-  res.json({ isoDate, mp3 });
+  res.json({ mp3 });
 });
 
 router.get("/", async (req, res) => {
@@ -77,7 +76,6 @@ router.get("/", async (req, res) => {
   // Set screen size.
   await page.setViewport({ width: 1080, height: 1024 });
 
-  const isoDate = new Date(new Date().toLocaleDateString()).toISOString();
   const rangeElHandle = await page.$("#bibleinfo_box");
   const rangeTxt = await rangeElHandle?.evaluate((el) => el.textContent);
   const execResult = /.+\:\s(.+)\((.+)\)(.+)\s찬.+/.exec(rangeTxt ?? "");
@@ -109,7 +107,7 @@ router.get("/", async (req, res) => {
 
   await browser.close();
 
-  res.json({ isoDate, koTitle, enTitle, range, verses });
+  res.json({ koTitle, enTitle, range, verses });
 });
 
 export default router;
