@@ -33,13 +33,14 @@ router.get("/cbs", async (req, res) => {
   const href = await firstAnchorHandle?.evaluate((el) =>
     el.getAttribute("href")
   );
+  const pageUri = "http://www.somyung.or.kr/modu/media_board/" + href;
 
   // if (!href) {
   //   await browser.close();
   //   return res.sendStatus(404);
   // }
 
-  await page.goto("http://www.somyung.or.kr/modu/media_board/" + href, {
+  await page.goto(pageUri, {
     waitUntil: "networkidle0",
   });
 
@@ -58,7 +59,7 @@ router.get("/cbs", async (req, res) => {
 
   const mp3 = "https://idcmedia.com/" + path;
 
-  res.json({ mp3 });
+  res.json({ mp3, pageUri });
 });
 
 router.get("/", async (req, res) => {
